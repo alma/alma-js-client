@@ -3,6 +3,9 @@ import Context from "./context";
 import Endpoint from "./endpoints/base";
 import PaymentsEndpoint from "./endpoints/payments";
 import {Constructor} from "./types";
+import Credentials from "./credentials/base";
+import ApiKeyCredentials from "./credentials/ApiKeyCredentials";
+import MerchantIdCredentials from "./credentials/MerchantIdCredentials";
 
 export const CLIENT_VERSION = "0.0.1";
 
@@ -17,15 +20,19 @@ export class Client {
   private readonly context: Context;
   private endpoints: Map<Constructor<Endpoint>, Endpoint> = new Map();
 
-  constructor(apiKey: string, options: ClientOptions = {}) {
-    if (!apiKey.trim()) {
-      throw new Error("An API key is required to instantiate a new Client");
-    }
-
+  constructor(credentials: Credentials, options: ClientOptions = {}) {
     options = Client.initOptions(options);
-    this.context = new Context(apiKey, options);
+    this.context = new Context(credentials, options);
 
     this.initUserAgent();
+  }
+
+  public static withApiKey(apiKey: string, options: ClientOptions = {}): Client {
+    return new Client(new ApiKeyCredentials(apiKey), options);
+  }
+
+  public static withMerchantId(merchantId: string, options: ClientOptions = {}): Client {
+    return new Client(new MerchantIdCredentials(merchantId), options);
   }
 
   private static initOptions(options: ClientOptions): ClientOptions {

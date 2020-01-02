@@ -27,7 +27,6 @@ export class Request {
 
     this.headers = {
       "User-Agent": this.context.userAgentString,
-      "Authorization": `Alma-Auth ${this.context.apiKey}`,
       "Accept": "application/json",
     };
 
@@ -56,6 +55,9 @@ export class Request {
     if (this.body) {
       config.data = this.body;
     }
+
+    // Enrich the request configuration with credentials information
+    config = this.context.credentials.configureCredentials(config);
 
     return config;
   }

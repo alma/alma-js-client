@@ -1,13 +1,14 @@
 import {ApiRootObject, ClientOptions} from "./client";
 import {ApiMode} from "./consts";
+import Credentials from "./credentials/base";
 
 export class Context {
-  public readonly apiKey: string;
+  public readonly credentials: Credentials;
   private readonly options: ClientOptions;
   private userAgentComponents: string[] = [];
 
-  constructor(apiKey: string, options: ClientOptions) {
-    this.apiKey = apiKey;
+  constructor(credentials: Credentials, options: ClientOptions) {
+    this.credentials = credentials;
     this.options = options;
   }
 
