@@ -8,3 +8,4 @@ import "core-js/stable/string/ends-with";
 import "regenerator-runtime/runtime";
 
 export {Client, ClientOptions} from "./client";
+export {ApiMode} from './consts';
