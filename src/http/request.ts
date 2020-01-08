@@ -26,7 +26,7 @@ export class Request {
     this.url = url;
 
     this.headers = {
-      "User-Agent": this.context.userAgentString,
+      "X-Alma-Agent": this.context.userAgentString,
       "Accept": "application/json",
     };
 
