@@ -1,4 +1,3 @@
-import {Constructor} from "../types";
 import Context from "../context";
 import Request from "../http/request";
 
