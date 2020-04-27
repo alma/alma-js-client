@@ -15,7 +15,7 @@ type AtLeastOne<T, Keys extends keyof T = keyof T> =
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
 // For semantic purposes
-type integer = number;
+export type integer = number;
 
 type Address = {
   first_name?: string;
