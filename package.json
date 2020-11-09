@@ -22,7 +22,7 @@
   },
   "scripts": {
     "start": "microbundle watch",
-    "test": "jest --coverage",
+    "test": "jest --coverage=false",
     "test:no-coverage": "jest",
     "test:watch": "jest --coverage --watch",
     "test:prod": "npm run lint && npm run test -- --no-cache",
