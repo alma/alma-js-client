@@ -1,47 +1,48 @@
-import axios, {AxiosRequestConfig, AxiosResponse, Method} from "axios";
-import Context from "../context";
-import Response from "./response";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, Method } from 'axios'
+import Context from '../context'
+import Response from './response'
+import Axios from 'axios'
 
 export class RequestError extends Error {
-  private request: Request | undefined;
-  private response: Response | undefined;
+  private request: Request | undefined
+  private response: Response | undefined
 
   constructor(message: string, request?: Request, response?: Response) {
-    super();
-    this.message = message;
-    this.request = request;
-    this.response = response;
+    super()
+    this.message = message
+    this.request = request
+    this.response = response
   }
 }
 
 export class Request {
-  private readonly context: Context;
-  private readonly url: string;
-  private readonly headers: Record<string, string>;
-  private params: Record<string, any>;
-  private body: any;
+  private readonly context: Context
+  private readonly url: string
+  private readonly headers: Record<string, string>
+  private params: Record<string, unknown>
+  private body: unknown
 
   constructor(context: Context, url: string) {
-    this.context = context;
-    this.url = url;
+    this.context = context
+    this.url = url
 
     this.headers = {
-      "X-Alma-Agent": this.context.userAgentString,
-      "Accept": "application/json",
-    };
+      'X-Alma-Agent': this.context.userAgentString,
+      Accept: 'application/json',
+    }
 
-    this.params = {};
-    this.body = null;
+    this.params = {}
+    this.body = null
   }
 
-  setBody(body: any): Request {
-    this.body = body;
-    return this;
+  setBody(body: unknown): Request {
+    this.body = body
+    return this
   }
 
-  setQueryParams(params: Record<string, any>): Request {
-    this.params = params;
-    return this;
+  setQueryParams(params: Record<string, unknown>): Request {
+    this.params = params
+    return this
   }
 
   private requestConfig(method: Method): AxiosRequestConfig {
@@ -49,17 +50,17 @@ export class Request {
       url: this.url,
       headers: this.headers,
       params: this.params,
-      method
-    };
+      method,
+    }
 
     if (this.body) {
-      config.data = this.body;
+      config.data = this.body
     }
 
     // Enrich the request configuration with credentials information
-    config = this.context.credentials.configureCredentials(config);
+    config = this.context.credentials.configureCredentials(config)
 
-    return config;
+    return config
   }
 
   private sendRequest(method: Method): Promise<Response> {
@@ -70,37 +71,37 @@ export class Request {
   }
 
   get(): Promise<Response> {
-    this.body = null;
-    return this.sendRequest("get");
+    this.body = null
+    return this.sendRequest('get')
   }
 
   post(): Promise<Response> {
-    return this.sendRequest("post");
+    return this.sendRequest('post')
   }
 
   put(): Promise<Response> {
-    return this.sendRequest("put");
+    return this.sendRequest('put')
   }
 
   private static processResponse(resp: AxiosResponse): Response {
-    return new Response(resp);
+    return new Response(resp)
   }
 
-  private processErrorResponse(error: any): never {
-    let errorMessage = "Unknown error";
-    let response: Response | undefined;
+  private processErrorResponse(error: AxiosError): never {
+    let errorMessage = 'Unknown error'
+    let response: Response | undefined
 
     if (error.response) {
-      response = new Response(error.response);
+      response = new Response(error.response)
       if (response.data) {
-        errorMessage = response.data.message || response.data.error;
+        errorMessage = response.data.message || response.data.error
       }
     } else {
-      errorMessage = `${error.name}: ${error.message}`;
+      errorMessage = `${error.name}: ${error.message}`
     }
 
-    throw new RequestError(errorMessage, this, response);
+    throw new RequestError(errorMessage, this, response)
   }
 }
 
-export default Request;
+export default Request
