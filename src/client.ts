@@ -7,7 +7,8 @@ import Credentials from './credentials/base'
 import ApiKeyCredentials from './credentials/ApiKeyCredentials'
 import MerchantIdCredentials from './credentials/MerchantIdCredentials'
 
-export const CLIENT_VERSION = '0.0.1'
+// The actual version will be inserted upon release into the built files
+export const CLIENT_VERSION = '%%_SEMANTIC_VERSION_%%'
 
 export type ApiRootObject = Record<ApiMode, string>
 
