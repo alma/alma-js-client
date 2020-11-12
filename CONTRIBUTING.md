@@ -5,7 +5,7 @@ These steps will guide you through contributing to this project:
 - Fork the repo
 - Clone it and install dependencies
 
-		git clone https://github.com/YOUR-USERNAME/alma-js-client
+		git clone https://github.com/alma/alma-js-client
 		npm install
 
 - Make and commit your changes. Make sure the commands npm run build and npm run test:prod are working.
