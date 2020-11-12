@@ -1,90 +1,95 @@
-import {ApiMode, LIVE_API_URL, SANDBOX_API_URL} from "./consts";
-import Context from "./context";
-import Endpoint from "./endpoints/base";
-import PaymentsEndpoint from "./endpoints/payments";
-import {Constructor} from "./types";
-import Credentials from "./credentials/base";
-import ApiKeyCredentials from "./credentials/ApiKeyCredentials";
-import MerchantIdCredentials from "./credentials/MerchantIdCredentials";
+import { ApiMode, LIVE_API_URL, SANDBOX_API_URL } from './consts'
+import Context from './context'
+import Endpoint from './endpoints/base'
+import PaymentsEndpoint from './endpoints/payments'
+import { Constructor } from './types'
+import Credentials from './credentials/base'
+import ApiKeyCredentials from './credentials/ApiKeyCredentials'
+import MerchantIdCredentials from './credentials/MerchantIdCredentials'
 
-export const CLIENT_VERSION = "0.0.1";
+// The actual version will be inserted upon release into the built files
+export const CLIENT_VERSION = '%%_SEMANTIC_VERSION_%%'
 
-export type ApiRootObject = Record<ApiMode, string>;
-export interface ClientOptions {
-  apiRoot?: string | ApiRootObject,
-  mode?: ApiMode,
-  logger?: Console
+export type ApiRootObject = Record<ApiMode, string>
+
+export interface ClientConfig {
+  apiRoot: string | ApiRootObject
+  mode: ApiMode
+  logger: Console
 }
 
+export type ClientOptions = Partial<ClientConfig>
+
 export class Client {
-  private readonly context: Context;
-  private endpoints: Map<Constructor<Endpoint>, Endpoint> = new Map();
+  private readonly context: Context
+  private endpoints: Map<Constructor<Endpoint>, Endpoint> = new Map()
 
   constructor(credentials: Credentials, options: ClientOptions = {}) {
-    options = Client.initOptions(options);
-    this.context = new Context(credentials, options);
-
-    this.initUserAgent();
+    const config = Client.initConfig(options)
+    this.context = new Context(credentials, config)
+    this.initUserAgent()
   }
 
   public static withApiKey(apiKey: string, options: ClientOptions = {}): Client {
-    return new Client(new ApiKeyCredentials(apiKey), options);
+    return new Client(new ApiKeyCredentials(apiKey), options)
   }
 
   public static withMerchantId(merchantId: string, options: ClientOptions = {}): Client {
-    return new Client(new MerchantIdCredentials(merchantId), options);
+    return new Client(new MerchantIdCredentials(merchantId), options)
   }
 
-  private static initOptions(options: ClientOptions): ClientOptions {
-    let defaultOptions: ClientOptions = {
-      apiRoot: {[ApiMode.TEST]: SANDBOX_API_URL, [ApiMode.LIVE]: LIVE_API_URL},
+  private static initConfig(options: ClientOptions): ClientConfig {
+    const defaultConfig: ClientConfig = {
+      apiRoot: { [ApiMode.TEST]: SANDBOX_API_URL, [ApiMode.LIVE]: LIVE_API_URL },
       mode: ApiMode.LIVE,
-      logger: console
-    };
+      logger: console,
+    }
 
-    options = {...defaultOptions, ...options};
+    const config = { ...defaultConfig, ...options }
 
     // If a single string value was provided for the API root URL, use it for both LIVE and TEST
     // API modes
-    if (typeof options.apiRoot === "string") {
-      options.apiRoot = {
-        [ApiMode.TEST]: options.apiRoot,
-        [ApiMode.LIVE]: options.apiRoot,
-      };
-    } else if (!options.apiRoot || !options.apiRoot[ApiMode.TEST] || !options.apiRoot[ApiMode.LIVE]) {
-      throw new Error("ClientOptions `apiRoot` must be a string or an object with ApiMode values as keys");
+    if (typeof config.apiRoot === 'string') {
+      config.apiRoot = {
+        [ApiMode.TEST]: config.apiRoot,
+        [ApiMode.LIVE]: config.apiRoot,
+      }
+    } else if (!config.apiRoot || !config.apiRoot[ApiMode.TEST] || !config.apiRoot[ApiMode.LIVE]) {
+      throw new Error(
+        'ClientOptions `apiRoot` must be a string or an object with ApiMode values as keys'
+      )
     }
 
-    if (options.mode !== ApiMode.LIVE && options.mode !== ApiMode.TEST) {
-      throw new Error("ClientOptions `mode` must be an ApiMode value")
+    if (config.mode !== ApiMode.LIVE && config.mode !== ApiMode.TEST) {
+      throw new Error('ClientOptions `mode` must be an ApiMode value')
     }
 
-    return options;
+    return config
   }
 
   private initUserAgent() {
-    this.addUserAgentComponent("JavaScript");
-    this.addUserAgentComponent("Alma for JS", CLIENT_VERSION);
+    this.addUserAgentComponent('JavaScript')
+    this.addUserAgentComponent('Alma for JS', CLIENT_VERSION)
   }
 
-  public addUserAgentComponent(component: string, version?: string) {
-    this.context.addUserAgentComponent(component, version);
+  public addUserAgentComponent(component: string, version?: string): void {
+    this.context.addUserAgentComponent(component, version)
   }
 
   private endpoint<T extends Endpoint>(klass: Constructor<T>): T {
-    let endpoint = this.endpoints.get(klass);
+    let endpoint = this.endpoints.get(klass)
 
     if (!endpoint) {
-      endpoint = new klass(this.context);
-      this.endpoints.set(klass, endpoint);
+      endpoint = new klass(this.context)
+      this.endpoints.set(klass, endpoint)
     }
 
-    return endpoint as T;
+    return endpoint as T
   }
 
   get payments(): PaymentsEndpoint {
-    return this.endpoint(PaymentsEndpoint);
+    return this.endpoint(PaymentsEndpoint)
   }
 }
 
-export default Client;
+export default Client
