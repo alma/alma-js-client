@@ -2,7 +2,7 @@ import Credentials from "./base";
 import {AxiosRequestConfig} from "axios";
 
 export class ApiKeyCredentials implements Credentials {
-  private readonly apiKey: string;
+  public readonly apiKey: string
 
   constructor(apiKey: string) {
     if (!apiKey.trim()) {
