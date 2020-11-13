@@ -6,7 +6,7 @@ export class MerchantIdCredentials implements Credentials {
 
   constructor(merchantId: string) {
     if (!merchantId.trim()) {
-      throw new Error("An API key is required to instantiate a new Client");
+      throw new Error('A merchant ID is required to instantiate a new Client')
     }
 
     this.merchantId = merchantId;
