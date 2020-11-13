@@ -13,12 +13,16 @@ export const CLIENT_VERSION = '%%_SEMANTIC_VERSION_%%'
 export type ApiRootObject = Record<ApiMode, string>
 
 export interface ClientConfig {
-  apiRoot: string | ApiRootObject
+  apiRoot: ApiRootObject
   mode: ApiMode
   logger: Console
 }
 
-export type ClientOptions = Partial<ClientConfig>
+// Client options are all optional (you don't say!) and `apiRoot` can be given
+// as a single string or a complete ApiRootObject
+export type ClientOptions = Partial<
+  Omit<ClientConfig, 'apiRoot'> & { apiRoot: string | ApiRootObject }
+>
 
 export class Client {
   private readonly context: Context
@@ -45,20 +49,23 @@ export class Client {
       logger: console,
     }
 
-    const config = { ...defaultConfig, ...options }
-
     // If a single string value was provided for the API root URL, use it for both LIVE and TEST
     // API modes
-    if (typeof config.apiRoot === 'string') {
-      config.apiRoot = {
-        [ApiMode.TEST]: config.apiRoot,
-        [ApiMode.LIVE]: config.apiRoot,
+    if (typeof options.apiRoot === 'string') {
+      options.apiRoot = {
+        [ApiMode.TEST]: options.apiRoot,
+        [ApiMode.LIVE]: options.apiRoot,
       }
-    } else if (!config.apiRoot || !config.apiRoot[ApiMode.TEST] || !config.apiRoot[ApiMode.LIVE]) {
+    } else if (
+      options.apiRoot &&
+      (!options.apiRoot[ApiMode.TEST] || !options.apiRoot[ApiMode.LIVE])
+    ) {
       throw new Error(
         'ClientOptions `apiRoot` must be a string or an object with ApiMode values as keys'
       )
     }
+
+    const config = { ...defaultConfig, ...(options as ClientConfig) }
 
     if (config.mode !== ApiMode.LIVE && config.mode !== ApiMode.TEST) {
       throw new Error('ClientOptions `mode` must be an ApiMode value')
