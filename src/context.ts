@@ -13,7 +13,7 @@ export class Context {
   }
 
   get apiRoot(): string {
-    return this.config.apiRoot[this.config.mode].trim()
+    return this.config.apiRoot[this.mode].trim()
   }
 
   get mode(): ApiMode {

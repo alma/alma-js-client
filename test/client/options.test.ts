@@ -1,24 +1,14 @@
-import { ApiMode, Client } from '../src'
-import { Context } from '../src/context'
+import { ApiMode, Client } from '@/index'
+import { Context } from '@/context'
 
 import { mocked } from 'ts-jest/utils'
 
-jest.mock('../src/context')
+jest.mock('@/context')
 
 /**
- * Client tests
+ * ClientOptions / ClientConfig tests
  */
 describe('API client', () => {
-  describe('instantiation', () => {
-    it('exposes withApiKey method', () => {
-      expect(Client.withApiKey).toBeTruthy()
-    })
-
-    it('exposes withMerchantId method', () => {
-      expect(Client.withMerchantId).toBeTruthy()
-    })
-  })
-
   describe('ClientOptions', () => {
     const MockedContext = mocked(Context, true)
 

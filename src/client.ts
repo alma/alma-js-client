@@ -29,7 +29,7 @@ export class Client {
   private endpoints: Map<Constructor<Endpoint>, Endpoint> = new Map()
 
   constructor(credentials: Credentials, options: ClientOptions = {}) {
-    const config = Client.initConfig(options)
+    const config = Client.initConfig(credentials, options)
     this.context = new Context(credentials, config)
     this.initUserAgent()
   }
@@ -42,7 +42,7 @@ export class Client {
     return new Client(new MerchantIdCredentials(merchantId), options)
   }
 
-  private static initConfig(options: ClientOptions): ClientConfig {
+  private static initConfig(credentials: Credentials, options: ClientOptions): ClientConfig {
     const defaultConfig: ClientConfig = {
       apiRoot: { [ApiMode.TEST]: SANDBOX_API_URL, [ApiMode.LIVE]: LIVE_API_URL },
       mode: ApiMode.LIVE,
@@ -65,13 +65,16 @@ export class Client {
       )
     }
 
-    const config = { ...defaultConfig, ...(options as ClientConfig) }
-
-    if (config.mode !== ApiMode.LIVE && config.mode !== ApiMode.TEST) {
+    if (!!options.mode && options.mode !== ApiMode.LIVE && options.mode !== ApiMode.TEST) {
       throw new Error('ClientOptions `mode` must be an ApiMode value')
     }
 
-    return config
+    // Infer API mode from provided API key when it makes sense
+    if (!options.mode && credentials instanceof ApiKeyCredentials) {
+      options.mode = credentials.apiKey.indexOf('_live_', 2) > 0 ? ApiMode.LIVE : ApiMode.TEST
+    }
+
+    return { ...defaultConfig, ...(options as ClientConfig) }
   }
 
   private initUserAgent() {
@@ -96,6 +99,10 @@ export class Client {
 
   get payments(): PaymentsEndpoint {
     return this.endpoint(PaymentsEndpoint)
+  }
+
+  get mode(): ApiMode {
+    return this.context.mode
   }
 }
 
