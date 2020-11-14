@@ -20,6 +20,10 @@ export class Context {
     return this.config.mode
   }
 
+  set mode(mode: ApiMode) {
+    this.config.mode = mode
+  }
+
   get logger(): Console {
     return this.config.logger
   }

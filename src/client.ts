@@ -104,6 +104,10 @@ export class Client {
   get mode(): ApiMode {
     return this.context.mode
   }
+
+  set mode(mode: ApiMode) {
+    this.context.mode = mode
+  }
 }
 
 export default Client
