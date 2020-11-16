@@ -1,15 +1,15 @@
-import Credentials from "./base";
-import {AxiosRequestConfig} from "axios";
+import Credentials from './base'
+import { AxiosRequestConfig } from 'axios'
 
 export class ApiKeyCredentials implements Credentials {
-  private readonly apiKey: string;
+  public readonly apiKey: string
 
   constructor(apiKey: string) {
     if (!apiKey.trim()) {
-      throw new Error("An API key is required to instantiate a new Client");
+      throw new Error('An API key is required to instantiate a new Client')
     }
 
-    this.apiKey = apiKey;
+    this.apiKey = apiKey
   }
 
   configureCredentials(config: AxiosRequestConfig): AxiosRequestConfig {
@@ -18,11 +18,10 @@ export class ApiKeyCredentials implements Credentials {
       ...config,
       headers: {
         ...config.headers,
-        "Authorization": `Alma-Auth ${this.apiKey}`,
-      }
-    };
+        Authorization: `Alma-Auth ${this.apiKey}`,
+      },
+    }
   }
-
 }
 
-export default ApiKeyCredentials;
+export default ApiKeyCredentials

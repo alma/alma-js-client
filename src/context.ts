@@ -1,4 +1,4 @@
-import { ApiRootObject, ClientConfig } from './client'
+import { ClientConfig } from './client'
 import { ApiMode } from './consts'
 import Credentials from './credentials/base'
 
@@ -13,12 +13,15 @@ export class Context {
   }
 
   get apiRoot(): string {
-    // At this point, we *know* config.apiRoot is an ApiRootObject object and not a string
-    return (this.config.apiRoot as ApiRootObject)[this.config.mode].trim()
+    return this.config.apiRoot[this.mode].trim()
   }
 
   get mode(): ApiMode {
     return this.config.mode
+  }
+
+  set mode(mode: ApiMode) {
+    this.config.mode = mode
   }
 
   get logger(): Console {
