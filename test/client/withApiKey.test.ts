@@ -37,10 +37,4 @@ describe('API client', () => {
       })
     })
   })
-
-  describe('with a merchant ID', () => {
-    it('exposes withMerchantId method', () => {
-      expect(Client.withMerchantId).toBeInstanceOf(Function)
-    })
-  })
 })
