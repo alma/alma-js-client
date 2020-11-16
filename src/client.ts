@@ -49,28 +49,27 @@ export class Client {
       logger: console,
     }
 
+    const { apiRoot, mode } = options
+
     // If a single string value was provided for the API root URL, use it for both LIVE and TEST
     // API modes
-    if (typeof options.apiRoot === 'string') {
+    if (typeof apiRoot === 'string') {
       options.apiRoot = {
-        [ApiMode.TEST]: options.apiRoot,
-        [ApiMode.LIVE]: options.apiRoot,
+        [ApiMode.TEST]: apiRoot,
+        [ApiMode.LIVE]: apiRoot,
       }
-    } else if (
-      options.apiRoot &&
-      (!options.apiRoot[ApiMode.TEST] || !options.apiRoot[ApiMode.LIVE])
-    ) {
+    } else if (apiRoot && (!apiRoot[ApiMode.TEST] || !apiRoot[ApiMode.LIVE])) {
       throw new Error(
         'ClientOptions `apiRoot` must be a string or an object with ApiMode values as keys'
       )
     }
 
-    if (!!options.mode && options.mode !== ApiMode.LIVE && options.mode !== ApiMode.TEST) {
+    if (!!mode && mode !== ApiMode.LIVE && mode !== ApiMode.TEST) {
       throw new Error('ClientOptions `mode` must be an ApiMode value')
     }
 
     // Infer API mode from provided API key when it makes sense
-    if (!options.mode && credentials instanceof ApiKeyCredentials) {
+    if (!mode && credentials instanceof ApiKeyCredentials) {
       options.mode = credentials.apiKey.indexOf('_live_', 2) > 0 ? ApiMode.LIVE : ApiMode.TEST
     }
 
