@@ -126,6 +126,9 @@
     "semi": false,
     "singleQuote": true
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "release": {
     "plugins": [
       "@semantic-release/commit-analyzer",
