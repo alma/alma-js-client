@@ -75,6 +75,24 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "eslintConfig": {
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "env": {
+      "browser": true
+    },
+    "plugins": [
+      "@typescript-eslint",
+      "jest"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier",
+      "prettier/@typescript-eslint"
+    ]
+  },
+  "eslintIgnore": ["node_modules", "dist"],
   "husky": {
     "hooks": {
       "prepare-commit-msg": "exec < /dev/tty && git-cz --hook || true",
