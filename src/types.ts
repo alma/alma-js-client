@@ -65,10 +65,12 @@ interface PaymentPayloadBase {
 
 // For the Eligibility endpoint, `return_url` is optional and `installments_count` can be an array
 // of integers
+export type SingleEligibilityPayload = { installments_count?: integer }
+export type MultipleEligibilityPayload = { installments_count?: integer[] }
+
 export interface PaymentEligibilityPayload extends PaymentPayloadBase {
-  payment: Omit<PartialBy<PaymentDataProps, 'return_url'>, 'installments_count'> & {
-    installments_count?: integer | integer[]
-  }
+  payment: Omit<PartialBy<PaymentDataProps, 'return_url'>, 'installments_count'> &
+    (SingleEligibilityPayload | MultipleEligibilityPayload)
 }
 
 // For the Payment creation endpoint, one of `billing_address` or `shipping_address` is required

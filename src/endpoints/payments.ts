@@ -1,10 +1,15 @@
 import Endpoint from './base'
-import { PaymentEligibilityPayload } from '../types'
+import { MultipleEligibilityPayload, PaymentEligibilityPayload } from '../types'
 import Eligibility from '../entities/eligibility'
 
 const PAYMENTS_PATH = '/v1/payments'
 
+type EligibilityResult<
+  T extends PaymentEligibilityPayload
+> = T['payment'] extends MultipleEligibilityPayload ? Eligibility[] : Eligibility
+
 export class PaymentsEndpoint extends Endpoint {
+  async eligibility<T extends PaymentEligibilityPayload>(data: T): Promise<EligibilityResult<T>>
   async eligibility(data: PaymentEligibilityPayload): Promise<Eligibility | Eligibility[]> {
     const response = await this.request(`${PAYMENTS_PATH}/eligibility`).setBody(data).post()
 
