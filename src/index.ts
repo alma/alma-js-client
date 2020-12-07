@@ -9,3 +9,4 @@ import 'regenerator-runtime/runtime'
 
 export { Client, ClientOptions } from './client'
 export { ApiMode } from './consts'
+export { Eligibility } from './entities/eligibility'
