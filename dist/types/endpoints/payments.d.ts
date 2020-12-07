@@ -1,7 +1,8 @@
 import Endpoint from './base';
-import { PaymentEligibilityPayload } from '../types';
+import { MultipleEligibilityPayload, PaymentEligibilityPayload } from '../types';
 import Eligibility from '../entities/eligibility';
+declare type EligibilityResult<T extends PaymentEligibilityPayload> = T['payment'] extends MultipleEligibilityPayload ? Eligibility[] : Eligibility;
 export declare class PaymentsEndpoint extends Endpoint {
-    eligibility(data: PaymentEligibilityPayload): Promise<Eligibility | Eligibility[]>;
+    eligibility<T extends PaymentEligibilityPayload>(data: T): Promise<EligibilityResult<T>>;
 }
 export default PaymentsEndpoint;

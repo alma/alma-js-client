@@ -45,10 +45,14 @@ interface PaymentPayloadBase {
     orders?: OrderData[];
     order?: OrderData;
 }
+export declare type SingleEligibilityPayload = {
+    installments_count?: integer;
+};
+export declare type MultipleEligibilityPayload = {
+    installments_count?: integer[];
+};
 export interface PaymentEligibilityPayload extends PaymentPayloadBase {
-    payment: Omit<PartialBy<PaymentDataProps, 'return_url'>, 'installments_count'> & {
-        installments_count?: integer | integer[];
-    };
+    payment: Omit<PartialBy<PaymentDataProps, 'return_url'>, 'installments_count'> & (SingleEligibilityPayload | MultipleEligibilityPayload);
 }
 export interface PaymentPayload extends PaymentPayloadBase {
     payment: AtLeastOne<PaymentDataProps, 'billing_address' | 'shipping_address'>;

@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/alma/alma-js-client/compare/v1.0.0...v1.0.1) (2020-12-07)
+
+
+### Bug Fixes
+
+* export Eligibility class from top-level index ([7212dbf](https://github.com/alma/alma-js-client/commit/7212dbf0f0d06cc7232e8fc891e6b426cfbb52d9))
+
 # 1.0.0 (2020-11-17)
 
 
