@@ -77,3 +77,130 @@ export interface PaymentEligibilityPayload extends PaymentPayloadBase {
 export interface PaymentPayload extends PaymentPayloadBase {
   payment: AtLeastOne<PaymentDataProps, 'billing_address' | 'shipping_address'>
 }
+
+
+export type PaymentId = string
+export interface Card {
+  brand: string
+  country: string
+  created: number
+  exp_month: number
+  exp_year: number
+  funding: string
+  id: string
+  last4: string
+  psp_representations: {
+    stripe: {
+      customer_id: string
+      original_source_id: string
+    }
+  }
+  three_d_secure_possible: boolean
+  verified: boolean
+}
+export interface Installment {
+  customer_fee: number
+  due_date: number
+  original_purchase_amount: number
+  purchase_amount: number
+  // TODO complete
+  state: 'pending'
+}
+export interface Requirement {
+  is_met: boolean
+  // TODO complete
+  name:
+    | 'customer_info'
+    | 'phone_verification'
+    | 'id_video_verification'
+    | 'banking_data_verification'
+}
+export type State =
+  | 'not_ready'
+  | 'not_started'
+  | 'scored_no'
+  | 'scored_maybe'
+  | 'scored_yes'
+  | 'in_progress'
+  | 'paid'
+  | 'late'
+  | 'default'
+
+export interface Payment {
+  billing_address: null
+  can_be_charged: boolean
+  created: number
+  custom_data: Record<string, unknown>
+  customer: {
+    addresses: []
+    bank_accounts: []
+    banking_data_collected: boolean
+    birth_date: null
+    business_id_number: null
+    business_name: null
+    card: Card | null
+    cards: Card[]
+    collection_state: null
+    created: number
+    email: string
+    email_verified: boolean
+    first_name: string
+    id: string
+    is_business: boolean
+    last_name: string
+    phone: string
+    phone_verified: boolean
+    primary_bank_account: null
+  }
+  customer_cancel_url: string
+  customer_fee: number
+  deferred_days: number
+  deferred_months: number
+  id: PaymentId
+  installments_count: number
+  is_customer_kyced: boolean
+  locale: string
+  merchant_id: string
+  merchant_name: string
+  merchant_website: string | null
+  logo_url: string | null
+  orders: [
+    {
+      comment: null
+      created: number
+      customer_url: null
+      data: Record<string, unknown>
+      id: string
+      merchant_reference: string
+      merchant_url: string
+      payment: PaymentId
+    }
+  ]
+  origin: string
+  payment_plan: Installment[]
+  // TODO complete
+  preferred_payment_method: 'card'
+  purchase_amount: number
+  refunds: []
+  requirements: Requirement[]
+  return_url: string
+  seller: null
+  sepa_debit_enabled: boolean
+  shipping_address: {
+    city: string
+    company: string | null
+    country: string
+    created: number
+    email: string | null
+    first_name: string | null
+    id: string
+    last_name: string | null
+    line1: string
+    line2: string | null
+    phone: string | null
+    postal_code: string | null
+  }
+  state: State
+  url: string
+  using_sepa_debit: boolean
+}
