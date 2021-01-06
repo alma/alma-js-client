@@ -1,5 +1,10 @@
 import Endpoint from './base'
-import { MultipleEligibilityPayload,Payment, PaymentEligibilityPayload, PaymentPayload } from '../types'
+import {
+  MultipleEligibilityPayload,
+  Payment,
+  PaymentEligibilityPayload,
+  PaymentPayload,
+} from '../types'
 import Eligibility from '../entities/eligibility'
 
 const PAYMENTS_PATH = '/v1/payments'
@@ -33,7 +38,7 @@ export class PaymentsEndpoint extends Endpoint {
   }
 
   async create(data: PaymentPayload): Promise<Payment> {
-    const response = await this.request(`${PAYMENTS_PATH}`).setBody(data).post()
+    const response = await this.request(PAYMENTS_PATH).setBody(data).post()
     return response.data
   }
 }
