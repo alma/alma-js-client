@@ -28,22 +28,22 @@ declare type PaymentDataProps = {
     shipping_address?: Address;
     custom_data?: any;
 };
-declare type CustomerData = {
+declare type CustomerPayload = {
     first_name?: string;
     last_name?: string;
     email?: string;
     phone?: string;
     addresses?: Address[];
 };
-declare type OrderData = {
+declare type OrderPayload = {
     merchant_reference?: string;
     merchant_url?: string;
     data?: any;
 };
 interface PaymentPayloadBase {
-    customer?: CustomerData;
-    orders?: OrderData[];
-    order?: OrderData;
+    customer?: CustomerPayload;
+    orders?: OrderPayload[];
+    order?: OrderPayload;
 }
 export declare type SingleEligibilityPayload = {
     installments_count?: integer;
@@ -56,5 +56,115 @@ export interface PaymentEligibilityPayload extends PaymentPayloadBase {
 }
 export interface PaymentPayload extends PaymentPayloadBase {
     payment: AtLeastOne<PaymentDataProps, 'billing_address' | 'shipping_address'>;
+}
+export interface Card {
+    brand: string;
+    country: string;
+    created: number;
+    exp_month: number;
+    exp_year: number;
+    funding: string;
+    id: string;
+    last4: string;
+    psp_representations: {
+        stripe: {
+            customer_id: string;
+            original_source_id: string;
+        };
+    };
+    three_d_secure_possible: boolean;
+    verified: boolean;
+}
+export interface Installment {
+    customer_fee: number;
+    due_date: number;
+    original_purchase_amount: number;
+    purchase_amount: number;
+    state: 'pending' | 'paid' | 'covered';
+}
+export interface Requirement {
+    is_met: boolean;
+    name: 'customer_info' | 'valid_payment_method' | 'phone_verification' | 'id_video_verification' | 'banking_data_verification';
+}
+export declare type State = 'not_ready' | 'not_started' | 'scored_no' | 'scored_maybe' | 'scored_yes' | 'in_progress' | 'paid' | 'late' | 'default';
+export interface Customer extends CustomerPayload {
+    addresses: Address[];
+    bank_accounts: [];
+    banking_data_collected: boolean;
+    birth_date: string | null;
+    business_id_number: string | null;
+    business_name: string | null;
+    card: Card | null;
+    cards: Card[];
+    collection_state: string | null;
+    created: number;
+    email: string | null;
+    email_verified: boolean;
+    first_name: string | null;
+    id: string;
+    is_business: boolean;
+    last_name: string | null;
+    phone: string | null;
+    phone_verified: boolean;
+    primary_bank_account: Record<string, unknown> | null;
+}
+export interface Order extends OrderPayload {
+    comment: string | null;
+    created: number;
+    customer_url: string | null;
+    data: Record<string, unknown>;
+    id: string;
+    merchant_reference: string | null;
+    merchant_url: string | null;
+    payment: string;
+}
+export interface Refund {
+    id: string;
+    created: number;
+    amount: number;
+    payment: string;
+    merchant_reference: string | null;
+    from_payment_cancellation: boolean;
+}
+export interface User {
+    id: string;
+    created: number;
+    name: string;
+    email: string;
+    is_alma_staff: boolean;
+    staff_role: string;
+}
+export interface Payment {
+    billing_address?: Address;
+    can_be_charged: boolean;
+    created: number;
+    custom_data: Record<string, unknown>;
+    customer: Customer;
+    customer_cancel_url: string;
+    customer_fee: number;
+    deferred_days: number;
+    deferred_months: number;
+    id: string;
+    installments_count: number;
+    is_customer_kyced: boolean;
+    locale: string;
+    merchant_id: string;
+    merchant_name: string;
+    merchant_website: string | null;
+    logo_url?: string;
+    orders: Order[];
+    origin: string;
+    payment_plan: Installment[];
+    preferred_payment_method: 'card' | 'bank_debit' | null;
+    purchase_amount: number;
+    refunds: Refund[];
+    requirements: Requirement[];
+    return_url: string;
+    seller: User | null;
+    sepa_debit_enabled: boolean;
+    shipping_address?: Address;
+    state: State;
+    url: string;
+    using_sepa_debit: boolean;
 }
 export {};

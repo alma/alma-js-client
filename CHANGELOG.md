@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/alma/alma-js-client/compare/v1.0.1...v1.1.0) (2021-01-11)
+
+
+### Features
+
+* **payments:** add creation endpoint ([07d1555](https://github.com/alma/alma-js-client/commit/07d1555a4a3abc5d0f252e56e82f3fadc3f3b4f8))
+* **types:** review changes ([089472a](https://github.com/alma/alma-js-client/commit/089472a39be599599d34d58997c2ef6135ceb247))
+
 ## [1.0.1](https://github.com/alma/alma-js-client/compare/v1.0.0...v1.0.1) (2020-12-07)
 
 

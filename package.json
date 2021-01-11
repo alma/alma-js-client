@@ -1,6 +1,6 @@
 {
   "name": "@alma/client",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "JavaScript client library for Alma API - https://getalma.eu",
   "keywords": [],
   "main": "dist/alma-client.js",
