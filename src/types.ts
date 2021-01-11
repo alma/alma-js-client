@@ -43,7 +43,7 @@ type PaymentDataProps = {
   custom_data?: any
 }
 
-type CustomerData = {
+type CustomerPayload = {
   first_name?: string
   last_name?: string
   email?: string
@@ -51,16 +51,16 @@ type CustomerData = {
   addresses?: Address[]
 }
 
-type OrderData = {
+type OrderPayload = {
   merchant_reference?: string
   merchant_url?: string
   data?: any
 }
 
 interface PaymentPayloadBase {
-  customer?: CustomerData
-  orders?: OrderData[]
-  order?: OrderData
+  customer?: CustomerPayload
+  orders?: OrderPayload[]
+  order?: OrderPayload
 }
 
 // For the Eligibility endpoint, `return_url` is optional and `installments_count` can be an array
@@ -78,8 +78,6 @@ export interface PaymentPayload extends PaymentPayloadBase {
   payment: AtLeastOne<PaymentDataProps, 'billing_address' | 'shipping_address'>
 }
 
-
-export type PaymentId = string
 export interface Card {
   brand: string
   country: string
@@ -103,14 +101,13 @@ export interface Installment {
   due_date: number
   original_purchase_amount: number
   purchase_amount: number
-  // TODO complete
-  state: 'pending'
+  state: 'pending' | 'paid' | 'covered'
 }
 export interface Requirement {
   is_met: boolean
-  // TODO complete
   name:
     | 'customer_info'
+    | 'valid_payment_method'
     | 'phone_verification'
     | 'id_video_verification'
     | 'banking_data_verification'
@@ -126,80 +123,86 @@ export type State =
   | 'late'
   | 'default'
 
+export interface Customer extends CustomerPayload {
+  addresses: Address[]
+  bank_accounts: []
+  banking_data_collected: boolean
+  birth_date: string | null
+  business_id_number: string | null
+  business_name: string | null
+  card: Card | null
+  cards: Card[]
+  collection_state: string | null
+  created: number
+  email: string | null
+  email_verified: boolean
+  first_name: string | null
+  id: string
+  is_business: boolean
+  last_name: string | null
+  phone: string | null
+  phone_verified: boolean
+  primary_bank_account: Record<string, unknown> | null
+}
+
+export interface Order extends OrderPayload {
+  comment: string | null
+  created: number
+  customer_url: string | null
+  data: Record<string, unknown>
+  id: string
+  merchant_reference: string | null
+  merchant_url: string | null
+  payment: string
+}
+
+export interface Refund {
+  id: string
+  created: number
+  amount: number
+  payment: string
+  merchant_reference: string | null
+  from_payment_cancellation: boolean
+}
+
+export interface User {
+  id: string
+  created: number
+  name: string
+  email: string
+  is_alma_staff: boolean
+  staff_role: string
+}
+
 export interface Payment {
-  billing_address: null
+  billing_address?: Address
   can_be_charged: boolean
   created: number
   custom_data: Record<string, unknown>
-  customer: {
-    addresses: []
-    bank_accounts: []
-    banking_data_collected: boolean
-    birth_date: null
-    business_id_number: null
-    business_name: null
-    card: Card | null
-    cards: Card[]
-    collection_state: null
-    created: number
-    email: string
-    email_verified: boolean
-    first_name: string
-    id: string
-    is_business: boolean
-    last_name: string
-    phone: string
-    phone_verified: boolean
-    primary_bank_account: null
-  }
+  customer: Customer
   customer_cancel_url: string
   customer_fee: number
   deferred_days: number
   deferred_months: number
-  id: PaymentId
+  id: string
   installments_count: number
   is_customer_kyced: boolean
   locale: string
   merchant_id: string
   merchant_name: string
   merchant_website: string | null
-  logo_url: string | null
-  orders: [
-    {
-      comment: null
-      created: number
-      customer_url: null
-      data: Record<string, unknown>
-      id: string
-      merchant_reference: string
-      merchant_url: string
-      payment: PaymentId
-    }
-  ]
+  logo_url?: string
+  orders: Order[]
   origin: string
   payment_plan: Installment[]
-  // TODO complete
-  preferred_payment_method: 'card'
+  preferred_payment_method: 'card' | 'bank_debit' | null
   purchase_amount: number
-  refunds: []
+  refunds: Refund[]
   requirements: Requirement[]
   return_url: string
-  seller: null
+  seller: User | null
   sepa_debit_enabled: boolean
-  shipping_address: {
-    city: string
-    company: string | null
-    country: string
-    created: number
-    email: string | null
-    first_name: string | null
-    id: string
-    last_name: string | null
-    line1: string
-    line2: string | null
-    phone: string | null
-    postal_code: string | null
-  }
+  shipping_address?: Address
   state: State
   url: string
   using_sepa_debit: boolean
