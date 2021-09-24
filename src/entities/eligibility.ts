@@ -4,6 +4,7 @@ import { integer } from '../types'
 export interface IInstallment {
   purchase_amount: integer
   customer_fee: integer
+  customer_interest: integer
   due_date: integer
 }
 
