@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/alma/alma-js-client/compare/v1.1.0...v1.1.1) (2021-09-28)
+
+
+### Bug Fixes
+
+* **installment:** type ([8c0bc14](https://github.com/alma/alma-js-client/commit/8c0bc148946a7f829472c53839ffbdc9b8afd028))
+
 # [1.1.0](https://github.com/alma/alma-js-client/compare/v1.0.1...v1.1.0) (2021-01-11)
 
 

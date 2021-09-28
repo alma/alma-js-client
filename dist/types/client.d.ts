@@ -1,7 +1,7 @@
 import { ApiMode } from './consts';
 import PaymentsEndpoint from './endpoints/payments';
 import Credentials from './credentials/base';
-export declare const CLIENT_VERSION = "1.1.0";
+export declare const CLIENT_VERSION = "1.1.1";
 export declare type ApiRootObject = Record<ApiMode, string>;
 export interface ClientConfig {
     apiRoot: ApiRootObject;
