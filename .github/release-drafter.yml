@@ -1,0 +1,35 @@
+name-template: 'v$NEXT_MAJOR_VERSION'
+tag-template: 'v$NEXT_MAJOR_VERSION'
+version-template: '$MAJOR'
+
+template: |
+  ## Changes
+
+  $CHANGES
+
+  ### Contributors
+
+  $CONTRIBUTORS
+
+categories:
+  - title: '🚀 New Features'
+    labels:
+      - 'type: feature'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'type: bugfix'
+  - title: '📝 Documentation'
+    labels: 'type: docs'
+  - title: '🔐 Security'
+    labels:
+      - 'type: security'
+  - title: '⚙️ Internal Changes'
+    labels:
+      - 'type: chore'
+      - 'type: ci'
+      - 'type: perf'
+      - 'type: refactor'
+      - 'type: test'
+
+change-template: '- $TITLE (#$NUMBER • @$AUTHOR)'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
