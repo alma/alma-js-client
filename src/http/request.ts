@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError, Method } from 'axios'
 import Context from '../context'
 import Response from './response'
-import Axios from 'axios'
 
 export class RequestError extends Error {
   private request: Request | undefined
