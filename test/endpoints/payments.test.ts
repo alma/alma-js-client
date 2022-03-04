@@ -3,6 +3,18 @@ import { expectTypeOf } from 'expect-type'
 import { PaymentsEndpoint } from '@/endpoints/payments'
 import Context from '@/context'
 import Eligibility from '@/entities/eligibility'
+import Request from '../../src/http/request'
+import * as RequestModule from '../../src/http/request'
+import Response from '../../src/http/response'
+import MerchantIdCredentials from '../../src/credentials/MerchantIdCredentials'
+import { ApiMode } from '../../src'
+import { AxiosResponse } from 'axios'
+
+const FAKE_CONTEXT = new Context(new MerchantIdCredentials('fake-id'), {
+  apiRoot: { test: 'https://api.sandbox.getalma.eu', live: '' },
+  mode: ApiMode.TEST,
+  logger: console,
+})
 
 describe('Payments endpoint', () => {
   describe('eligibility method', () => {
@@ -43,6 +55,55 @@ describe('Payments endpoint', () => {
       expectTypeOf(multipleEligibility).toEqualTypeOf<Promise<Eligibility[]>>()
 
       spy.mockRestore()
+    })
+  })
+
+  describe('fetch method', () => {
+    it('exists', () => {
+      expect(PaymentsEndpoint.prototype.fetch).toBeDefined()
+    })
+
+    it('calls the API with provided payment ID', async () => {
+      const paymentId = 'A_PAYMENT_ID'
+
+      const newRequest = jest.spyOn(PaymentsEndpoint.prototype, 'request')
+      const get = jest
+        .spyOn(Request.prototype, 'get')
+        .mockImplementation(async () => new Response({} as AxiosResponse))
+
+      const endpoint = new PaymentsEndpoint(FAKE_CONTEXT)
+      await endpoint.fetch(paymentId)
+
+      expect(newRequest).toHaveBeenCalledWith(`/v1/payments/${paymentId}`)
+      expect(get).toHaveBeenCalled()
+
+      get.mockRestore()
+      newRequest.mockRestore()
+    })
+
+    it('returns the payment data', async () => {
+      const paymentData = {
+        id: 'A_PAYMENT_ID',
+        url: 'https://checkout.sandbox.getalma.eu/A_PAYMENT_ID',
+      }
+
+      const get = jest.spyOn(Request.prototype, 'get').mockImplementation(
+        async () =>
+          new Response({
+            data: paymentData,
+            status: 200,
+            statusText: 'OK',
+            headers: { 'Content-type': 'application/json' },
+            config: {},
+          })
+      )
+
+      const endpoint = new PaymentsEndpoint(FAKE_CONTEXT)
+      const receivedData = await endpoint.fetch(paymentData.id)
+
+      expect(receivedData).toEqual(paymentData)
+
+      get.mockRestore()
     })
   })
 })
