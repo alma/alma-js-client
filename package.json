@@ -31,7 +31,9 @@
     "prebuild": "rm -rf dist",
     "build": "microbundle",
     "commit": "git-cz",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -64,7 +66,8 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "@snyk/protect": "latest"
   },
   "commitlint": {
     "extends": [
@@ -201,5 +204,6 @@
         }
       ]
     ]
-  }
+  },
+  "snyk": true
 }
