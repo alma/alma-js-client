@@ -41,6 +41,11 @@ export class PaymentsEndpoint extends Endpoint {
     const response = await this.request(PAYMENTS_PATH).setBody(data).post()
     return response.data
   }
+
+  async fetch(paymentId: string): Promise<Payment> {
+    const response = await this.request(`${PAYMENTS_PATH}/${paymentId}`).get()
+    return response.data
+  }
 }
 
 export default PaymentsEndpoint
